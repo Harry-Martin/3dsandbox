@@ -1,60 +1,26 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <stdio.h>
+#include <GL/glew.h>
 
-void glfw_error_callback(int error, const char* description)
-{
-    fprintf(stderr, "GLFW ERROR: %s\n", description);
-}
+#include "window.h"
 
-void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-    {
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
-    }
-}
-
-void glfw_framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
 
 int main()
 {
-    glfwInit();
 
-    glfwSetErrorCallback(glfw_error_callback);
+    Window* window = create_window(1920, 1080, "Test");
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glClearColor(0.4f, 0.6f, 0.35f, 1.0f);
 
-    GLFWwindow* window = glfwCreateWindow(1920, 1080, "Test", NULL, NULL);
-
-    glfwSetKeyCallback(window, glfw_key_callback);
-
-    glfwMakeContextCurrent(window);
-    glewInit();
-
-    glfwSwapInterval(1); /* NOTE: acts on current context (context must be valid first) */
-
-    double lastTime = 0;
-    double startTime = 0;
-    double dt = 0;
-    while (!glfwWindowShouldClose(window))
+    while (!window_should_close(window))
     {
+        glClear(GL_COLOR_BUFFER_BIT);
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        printf("dt: %lf\n", window->time.dt);
 
-        lastTime = startTime;
-        startTime = glfwGetTime();
-        dt = startTime - lastTime;
-        
+        update_window(window);
     }
 
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    destroy_window(window);
 
     return 0;
 }
