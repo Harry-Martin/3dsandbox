@@ -3,7 +3,7 @@
 
 CC := gcc
 
-LIBS := -lm -lllama -lGL -lglfw
+LIBS := -lm -lllama -lGL -lglfw -lGLEW
 CFLAGS := 
 
 SRC_DIR := src
