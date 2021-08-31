@@ -22,5 +22,6 @@ typedef struct
 Window* create_window();
 bool window_should_close(Window* window);
 void update_window(Window* window);
-void destroy_window(Window* window);
+void free_window(Window* window);
+
 #endif /* WINDOW_H */

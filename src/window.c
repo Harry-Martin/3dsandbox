@@ -5,12 +5,12 @@
 
 #include "window.h"
 
-void glfw_error_callback(int error, const char* description)
+void window_error_callback(int error, const char* description)
 {
     fprintf(stderr, "GLFW ERROR: %s\n", description);
 }
 
-void glfw_key_callback(GLFWwindow* id, int key, int scancode, int action, int mods)
+void window_key_callback(GLFWwindow* id, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     {
@@ -18,7 +18,7 @@ void glfw_key_callback(GLFWwindow* id, int key, int scancode, int action, int mo
     }
 }
 
-void glfw_framebuffer_size_callback(GLFWwindow* id, int width, int height)
+void window_framebuffer_size_callback(GLFWwindow* id, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
@@ -27,14 +27,15 @@ Window* create_window(int width, int height)
 {
     glfwInit();
 
-    glfwSetErrorCallback(glfw_error_callback);
+    glfwSetErrorCallback(window_error_callback);
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     GLFWwindow* id = glfwCreateWindow(width, height, "Test", NULL, NULL);
 
-    glfwSetKeyCallback(id, glfw_key_callback);
+    glfwSetKeyCallback(id, window_key_callback);
 
     glfwMakeContextCurrent(id);
     glewInit();
@@ -50,7 +51,7 @@ Window* create_window(int width, int height)
         .lastTime = 0,
         .dt = 0,
     };
-    
+
     return window;
 }
 
@@ -69,7 +70,7 @@ void update_window(Window* window)
     window->time.dt = window->time.startTime - window->time.lastTime;
 }
 
-void destroy_window(Window* window)
+void free_window(Window* window)
 {
     glfwDestroyWindow(window->id);
     glfwTerminate();

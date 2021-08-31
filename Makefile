@@ -4,7 +4,7 @@
 CC := gcc
 
 LIBS := -lm -lllama -lGL -lglfw -lGLEW
-CFLAGS := 
+CFLAGS := -ggdb
 
 SRC_DIR := src
 BUILD_DIR := build
