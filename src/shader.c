@@ -71,7 +71,6 @@ Shader* create_shader(GLenum type, const char* filepath)
 {
     Shader* shader = NULL;
     char* src = read_source(filepath);
-    printf("SRC: %s", src);
     if (src != NULL)
     {
         GLuint id = compile_shader(type, src);
