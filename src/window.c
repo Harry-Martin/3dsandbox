@@ -21,6 +21,9 @@ void window_key_callback(GLFWwindow* id, int key, int scancode, int action, int 
 void window_framebuffer_size_callback(GLFWwindow* id, int width, int height)
 {
     glViewport(0, 0, width, height);
+    Window* window = glfwGetWindowUserPointer(id);
+    window->width = width;
+    window->height = height;
 }
 
 Window* create_window(int width, int height)
@@ -36,6 +39,7 @@ Window* create_window(int width, int height)
     GLFWwindow* id = glfwCreateWindow(width, height, "Test", NULL, NULL);
 
     glfwSetKeyCallback(id, window_key_callback);
+    glfwSetFramebufferSizeCallback(id, window_framebuffer_size_callback);
 
     glfwMakeContextCurrent(id);
     glewInit();
@@ -52,6 +56,8 @@ Window* create_window(int width, int height)
         .dt = 0,
     };
 
+    glfwSetWindowUserPointer(window->id, window);
+
     return window;
 }
 
@@ -65,6 +71,12 @@ void update_window(Window* window)
     glfwSwapBuffers(window->id);
     glfwPollEvents();
 
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+
+    window->width = viewport[2];
+    window->height = viewport[3];
+
     window->time.lastTime = window->time.startTime;
     window->time.startTime = glfwGetTime();
     window->time.dt = window->time.startTime - window->time.lastTime;
@@ -76,3 +88,4 @@ void free_window(Window* window)
     glfwTerminate();
     free(window);
 }
+

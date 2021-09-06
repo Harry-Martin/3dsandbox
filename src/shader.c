@@ -1,3 +1,5 @@
+#include <GL/glew.h>
+#include <llama/util.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -37,9 +39,9 @@ static int check_shader_error(GLuint id, GLenum type, const char* message)
     {
         char log[512];
         glGetShaderInfoLog(id, 512, NULL, log);
-        fprintf(stderr,"%s : \n%s\n", message, log);
+        fprintf(stderr, "%s : \n%s\n", message, log);
     }
-    
+
     return success;
 }
 
@@ -51,9 +53,9 @@ static int check_program_error(GLuint id, GLenum type, const char* message)
     {
         char log[512];
         glGetProgramInfoLog(id, 512, NULL, log);
-        fprintf(stderr,"%s : \n%s\n", message, log);
+        fprintf(stderr, "%s : \n%s\n", message, log);
     }
-    
+
     return success;
 }
 
@@ -92,7 +94,7 @@ ShaderProgram* create_program(Shader* vs, Shader* fs)
     ShaderProgram* program = malloc(sizeof(ShaderProgram));
 
     program->id = glCreateProgram();
-    
+
     glAttachShader(program->id, vs->id);
     glAttachShader(program->id, fs->id);
 
@@ -114,3 +116,28 @@ void free_program(ShaderProgram* program)
     free(program);
 }
 
+void use_program(ShaderProgram* shader)
+{
+    glUseProgram(shader->id);
+}
+
+void set_uniform_mat4(ShaderProgram* shader, const char* name, llmat m)
+{
+    use_program(shader);
+    GLint uniform_location = glGetUniformLocation(shader->id, name);
+    glUniformMatrix4fv(uniform_location, 1, GL_FALSE, ll_matToFloats(m));
+}
+
+void set_uniform_vec4(ShaderProgram* shader, const char* name, llvec v)
+{
+    use_program(shader);
+    GLint uniform_location = glGetUniformLocation(shader->id, name);
+    glUniform4fv(uniform_location, 1, ll_vecToFloats(v));
+}
+
+void set_uniform_float(ShaderProgram* shader, const char* name, float* f)
+{
+    use_program(shader);
+    GLint uniform_location = glGetUniformLocation(shader->id, name);
+    glUniform1fv(uniform_location, 1, f);
+}
